@@ -39,3 +39,35 @@ reservas_con_niños <- sum(!is.na(hotel_bookings_TP$children) & hotel_bookings_T
 
 print(paste("Cantidad total de reservas que incluyen niños y/o bebés:", reservas_con_niños))
 
+# Calcular las reservas por año y mes
+bookings_per_year_month <- aggregate(hotel_bookings_TP$hotel, 
+                                     by = list(Year = hotel_bookings_TP$arrival_date_year,
+                                               Month = hotel_bookings_TP$arrival_date_month), 
+                                     FUN = length)
+
+# Renombrar la columna que contiene el número de reservas
+names(bookings_per_year_month)[3] <- "Number_of_Bookings"
+
+# Convertir la columna Number_of_Bookings a numérica
+bookings_per_year_month$Number_of_Bookings <- as.numeric(bookings_per_year_month$Number_of_Bookings)
+
+# Calcular la media de reservas por mes para cada año
+mean_bookings_per_month <- aggregate(bookings_per_year_month$Number_of_Bookings, 
+                                     by = list(Month = bookings_per_year_month$Month), 
+                                     FUN = mean)
+
+# Encontrar el mes con la menor demanda de reservas
+min_demand_month <- mean_bookings_per_month[which.min(mean_bookings_per_month$x), "Month"]
+
+# Crear el gráfico
+ggplot(data = mean_bookings_per_month, aes(x = Month, y = x)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Demanda Promedio de Reservas por Mes",
+       x = "Mes",
+       y = "Número Promedio de Reservas") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  geom_vline(xintercept = min_demand_month, linetype = "dashed", color = "red") +
+  annotate("text", x = min_demand_month, y = max(mean_bookings_per_month$x), 
+           label = "Menor Demanda", color = "red", vjust = -0.5, hjust = 0)
+
