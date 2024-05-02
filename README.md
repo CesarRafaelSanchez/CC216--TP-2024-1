@@ -8,6 +8,7 @@ The description of the content and structure of the deliverable and repository o
 
 
 conclusions
+
 El análisis muestra que 119390 reservas se realizaron en City Hotel y Resort Hotel en Portugal entre los años 2015 y 2017. De estos dos hoteles City Hotel tuvo más reservas en total con una cantidad de 79330 reservas. Esto sugiere que City Hotel es preferido por los clientes.
 
 La tendencia temporal de las reservas indica que hay un aumento en la demanda a lo largo del tiempo. Esto podría tener implicaciones en la planificación y gestión de la capacidad del hotel.
