@@ -100,3 +100,135 @@ barplot(cancellations_by_month,
         col = "skyblue")
 # Imprimir valores exactos
 print(cancellations_by_month)
+
+setwd("C:/Users/tribu/Desktop/TP")
+datos <- read.csv("hotel_bookings.csv", header = TRUE, stringsAsFactors = FALSE)
+names(datos)
+str(datos)
+summary(datos)
+colSums(is.na(datos))
+#convertimos datos vacios a NA
+data<-read.csv("hotel_bookings.csv",na.strings="NA")
+colSums(is.na(datos))
+data<-na.omit(data)
+colSums(is.na(data))
+
+#datos atipicos
+#visualizacion
+boxplot(data$lead_time)
+boxplot(data$stays_in_week_nights)
+boxplot(data$stays_in_weekend_nights)
+boxplot(data$adults)
+boxplot(data$babies)
+boxplot(data$children)
+boxplot(data$previous_cancellations)
+boxplot(data$previous_bookings_not_canceled)
+boxplot(data$booking_changes)
+boxplot(data$days_in_waiting_list)
+boxplot(data$required_car_parking_spaces)
+#trasformacion###############
+
+#funcion para datos altos
+Psuperior<-function(data,variable){
+  percentilS<- quantile(data[[variable]], probs = 0.95, na.rm = TRUE)
+  data[[variable]]<- ifelse(data[[variable]] > percentilS, percentilS, data[[variable]])
+  return(data)
+}
+#funcion para datos bajos
+Pinferior<-function(data,variable){
+  percentilI<- quantile(data[[variable]], probs = 0.05, na.rm = TRUE)
+  data[[variable]]<- ifelse(data[[variable]] < percentilI, percentilI, data[[variable]])
+  return(data)
+}
+
+##para lead_time
+data<-Psuperior(data,"lead_time")
+boxplot(data$lead_time)
+##para stays_in_week_nights
+data<-Psuperior(data,"stays_in_week_nights")
+boxplot(data$stays_in_week_nights)
+##para stays_in_weekend_nights
+data<-Psuperior(data,"stays_in_weekend_nights")
+boxplot(data$stays_in_weekend_nights)
+
+##para adults OJO====================
+# Calcular cuartiles
+quartiles <- quantile(data$adults, probs = c(0.25, 0.75), na.rm = TRUE)
+
+# Calcular rango intercuartílico (IQR)
+IQR <- quartiles[2] - quartiles[1]
+
+# Calcular límites para identificar outliers
+lower_limit <- quartiles[1] - 1.5 * IQR
+upper_limit <- quartiles[2] + 1.5 * IQR
+
+# Reemplazar outliers con la mediana
+data$adults[data$adults < lower_limit | data$adults > upper_limit] <- median(data$adults, na.rm = TRUE)
+boxplot(data$adults)
+
+data$adults[data$adults==0]<-NA
+ggplot(data, aes(x = adults)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black") +
+  labs(title = "Distribución de la variable 'adults'",
+       x = "Número de adults",
+       y = "Frecuencia")
+
+##para babies OJO==============
+# Calcular cuartiles
+quartiles_babies <- quantile(data$babies, probs = c(0.25, 0.75), na.rm = TRUE)
+
+# Calcular rango intercuartílico (IQR)
+IQR_babies <- quartiles_babies[2] - quartiles_babies[1]
+
+# Calcular límites para identificar outliers
+lower_limit_babies <- quartiles_babies[1] - 1.5 * IQR_babies
+upper_limit_babies <- quartiles_babies[2] + 1.5 * IQR_babies
+
+# Reemplazar outliers con la mediana
+median_babies <- median(data$babies, na.rm = TRUE)
+data$babies[data$babies < lower_limit_babies | data$babies > upper_limit_babies] <- median_babies
+
+boxplot(data$babies)
+data <- data[-c(46620,78657),]
+
+ggplot(data, aes(x = babies)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black") +
+  labs(title = "Distribución de la variable 'babies'",
+       x = "Número de bebés",
+       y = "Frecuencia")
+data$babies[data$babies==0]<-NA
+
+##para children
+ggplot(data, aes(x = children)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black") +
+  labs(title = "Distribución de la variable 'children'",
+       x = "Número de niños",
+       y = "Frecuencia")
+data$children[data$children==0]<-NA
+boxplot(data$children)
+data<-Psuperior(data,"children")
+##para required_car_parking_spaces
+#solo cuenta con 5 valores atipicos asi que los eliminamos
+data <- data[-c(29046, 29047,38118,102763,110813), ]
+boxplot(data$required_car_parking_spaces)
+data <- data[-c(102763), ]
+data$required_car_parking_spaces[data$required_car_parking_spaces==0]<-NA
+
+
+# matriz de correlación
+correlation_matrix <- cor(data[, c("adr", "stays_in_weekend_nights", "stays_in_week_nights", "adults", "children", "babies", "booking_changes")])
+print(correlation_matrix)
+
+
+# gráfico de dispersión
+ggplot(data, aes(x = adr, y = stays_in_weekend_nights)) +
+  geom_point() +
+  labs(title = "Precio de la Habitación X Noches de Fines de Semana",
+       x = "Precio de la Habitación",
+       y = "Noches de Estancia durante Fines de Semana")
+
+
+# Convertir la matriz de correlación en un data frame
+correlation_df <- as.data.frame(correlation_matrix)
+correlation_df$variables <- rownames(correlation_df)
+
