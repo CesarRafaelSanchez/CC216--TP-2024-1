@@ -232,3 +232,31 @@ ggplot(data, aes(x = adr, y = stays_in_weekend_nights)) +
 correlation_df <- as.data.frame(correlation_matrix)
 correlation_df$variables <- rownames(correlation_df)
 
+#gráfico de barras para required_car_parking_spaces x reserva fue cancelada
+ggplot(data, aes(x = factor(required_car_parking_spaces), fill = factor(is_canceled))) +
+  geom_bar(position = "dodge") +
+  labs(title = "Cantidad de Espacios de Reserva según Cancelación de Reserva",
+       x = "Cantidad de Espacios de Reserva",
+       y = "Cantidad de Reservas") +
+  scale_fill_discrete(name = "Cancelación de Reserva",
+                      labels = c("No", "Sí"))
+
+
+# gráfico de barras para los meses con mayor cantidad de cancelaciones de reservas
+ggplot(data, aes(x = arrival_date_month, fill = factor(is_canceled))) +
+  geom_bar() +
+  labs(title = "Cancelaciones de Reservas por Mes",
+       x = "Mes",
+       y = "Cantidad de Cancelaciones") +
+  scale_fill_discrete(name = "Cancelación de Reserva",
+                      labels = c("No", "Sí")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# cantidad de reservas por hotel
+ggplot(data, aes(x = hotel, fill = factor(is_canceled))) +
+  geom_bar() +
+  labs(title = "Cantidad de Reservas por Hotel",
+       x = "Hotel",
+       y = "Cantidad de Reservas") +
+  scale_fill_discrete(name = "Cancelación de Reserva",
+                      labels = c("No", "Sí"))
