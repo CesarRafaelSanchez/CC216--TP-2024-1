@@ -71,3 +71,32 @@ ggplot(data = mean_bookings_per_month, aes(x = Month, y = x)) +
   annotate("text", x = min_demand_month, y = max(mean_bookings_per_month$x), 
            label = "Menor Demanda", color = "red", vjust = -0.5, hjust = 0)
 
+setwd("C:/Users/bruce/Downloads/hotel_bookings.csv")
+hotel_bookings <- read.csv("hotel_bookings.csv")
+
+# Encontrar cuando se producen las temporadas de reservas alta, media y baja
+month_counts <- rep(0, 12)
+
+for (i in hotel_bookings$arrival_date_month) {
+  month_index <- match(tolower(i), tolower(month.name))
+  if (!is.na(month_index)) {
+    month_counts[month_index] <- month_counts[month_index] + 1
+  }
+}
+# Crear grafico
+barplot(month_counts, names.arg = month.abb, xlab = "Mes", ylab = "Frecuencia", main = "Frecuencia de clientes por mes", col = "blue")
+
+
+# Encontrar en que meses del año se producen mas cencelaciones de reservas
+bookings_2017 <- subset(hotel_bookings, arrival_date_year == 2017)
+
+cancellations_by_month <- tapply(bookings_2017$is_canceled, bookings_2017$arrival_date_month, sum)
+months <- factor(names(cancellations_by_month), levels = month.name)
+# Crear grafico
+barplot(cancellations_by_month,
+        main = "Cancelaciones por mes en 2017",
+        xlab = "Mes",
+        ylab = "Numero de cancelaciones",
+        col = "skyblue")
+# Imprimir valores exactos
+print(cancellations_by_month)
