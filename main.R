@@ -260,3 +260,28 @@ ggplot(data, aes(x = hotel, fill = factor(is_canceled))) +
        y = "Cantidad de Reservas") +
   scale_fill_discrete(name = "Cancelación de Reserva",
                       labels = c("No", "Sí"))
+
+# cantidad de reservas por hotel
+ggplot(data, aes(x = hotel, fill = factor(is_canceled))) +
+  geom_bar() +
+  labs(title = "Cantidad de Reservas por Hotel",
+       x = "Hotel",
+       y = "Cantidad de Reservas") +
+  scale_fill_discrete(name = "Cancelación de Reserva",
+                      labels = c("No", "Sí"))
+
+ggplot(data, aes(x = booking_changes, y = stays_in_week_nights)) +
+  geom_point() +
+  labs(title = "Relación entre Cambios de Reserva x Noche de Estancia",
+       x = "Cambios en la Reserva",
+       y = "Noches de Estancia Semanal")
+
+
+#¿Es importante contar con espacios de estacionamiento?
+cancelation_prop <- aggregate(data$is_canceled, 
+  by = list(data$required_car_parking_spaces), FUN = function(x) mean(x == 1))
+
+barplot(cancelation_prop$x, names.arg = cancelation_prop$Group.1,
+        xlab = "Cantidad de Espacios de Estacionamiento",
+        ylab = "Proporción de Cancelaciones de Reserva",
+       )
