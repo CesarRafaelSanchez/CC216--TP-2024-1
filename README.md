@@ -1,13 +1,19 @@
 SUBJECT: EXPLORATORY ANALYSIS OF A DATASET IN R/RSTUDIO
 
-Objective:
+# **Objective:**
                                                         
 To perform an exploratory analysis of a dataset (EDA), creating visualizations and obtaining basic inferences using RStudio as a software tool.
+
+# **Autores:**
+* Loana Colleen Matos Rodriguez
+* Cesar Rafael Sanchez Garay
+* Bruce Matias Fleck Ojeda
+* Larios Mellado Josafat
 
 The description of the content and structure of the deliverable and repository on GitHub is detailed in the following file:
 
 
-**conclusions**
+# **conclusions**
 
 * El análisis muestra que 119390 reservas se realizaron en City Hotel y Resort Hotel en Portugal entre los años 2015 y 2017. De estos dos hoteles City Hotel tuvo más reservas en total con una cantidad de 79330 reservas. Esto sugiere que City Hotel es preferido por los clientes.
 
